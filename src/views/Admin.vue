@@ -1,14 +1,15 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="admin">
+    <img-uploader/>
   </div>
 </template>
-
 <script>
 import ImgUploader from "../components/ImgUploader";
 export default {
-  name: "about",
-  components: {}
+  name: "admin",
+  components: {
+    ImgUploader
+  }
 };
 </script>
 

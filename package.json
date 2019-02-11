@@ -9,8 +9,12 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "bootstrap-vue": "^2.0.0-rc.11",
+    "firebase": "^5.8.1",
+    "jquery": "^3.3.1",
     "register-service-worker": "^1.5.2",
     "vue": "^2.5.22",
+    "vue-firestore": "^0.3.16",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
