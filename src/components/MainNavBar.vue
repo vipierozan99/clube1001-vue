@@ -8,14 +8,12 @@
       <b-navbar-nav>
         <b-nav-item to="/">Home</b-nav-item>
         <b-nav-item to="/galleries">Galeria</b-nav-item>
+        <b-nav-item to="/us">Nós</b-nav-item>
         <b-nav-item to="/about">Sobre</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->
-      <b-navbar-nav class="ml-auto">
-        <b-nav-item to="/">Home</b-nav-item>
-        <b-nav-item to="/about">Sobre</b-nav-item>
-      </b-navbar-nav>
+      <b-navbar-nav class="ml-auto"></b-navbar-nav>
     </b-collapse>
   </b-navbar>
 </template>

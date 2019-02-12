@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { db } from "../firebase.js";
+import { Datab } from "../firebase.js";
 
 export default {
   name: "BtCarousel",
@@ -48,7 +48,7 @@ export default {
   },
   firestore() {
     return {
-      static_images: db.collection(this.path)
+      static_images: Datab.collection(this.path)
     };
   }
 };

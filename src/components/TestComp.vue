@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { db } from "../firebase";
+import { Datab } from "../firebase";
 
 export default {
   name: "TestComp",
@@ -26,7 +26,7 @@ export default {
   },
   firestore() {
     return {
-      reptiles: db.collection("reptiles")
+      reptiles: Datab.collection("reptiles")
     };
   },
   methods: {

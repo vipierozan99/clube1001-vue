@@ -39,6 +39,10 @@ export default {
 };
 </script>
 <style scoped>
+.home {
+  max-width: 1800px;
+  margin: auto;
+}
 .bg-dark {
   background-color: #3c3d3e !important;
   border-radius: 11px 11px 11px 11px;

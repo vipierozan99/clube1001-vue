@@ -11,6 +11,9 @@
     <b-input-group size="sm" class="mb-3" prepend="Texto">
       <b-form-input placeholder="Sub text" v-model="text"/>
     </b-input-group>
+    <b-input-group size="sm" class="mb-3" prepend="Collection">
+      <b-form-select v-model="path" :options="options" size="lg"/>
+    </b-input-group>
     <b-input-group size="sm" class="mb-3" prepend="Path">
       <b-form-input placeholder="Path to collection" value="static_images-" v-model="path"/>
     </b-input-group>
@@ -18,9 +21,7 @@
 </template>
 
 <script>
-import { db, st } from "../firebase";
-import firebase from "firebase/app";
-import "firebase/storage";
+import { Datab, St } from "../firebase";
 
 export default {
   name: "ImgUploader",
@@ -31,7 +32,20 @@ export default {
       text: null,
       path: null,
       counter: 0,
-      max: 100
+      max: 100,
+      options: [
+        { value: null, text: "Please select an option" },
+        { value: "static-images-home", text: "home collection" },
+        { value: "static_images-Fotos-Clube", text: "Fotos Clube collection" },
+        {
+          value: "static_images-Fotos-Esporte",
+          text: "Fotos Esporte collection"
+        },
+        {
+          value: "static_images-Fotos-Eventos",
+          text: "Fotos Eventos colleciton"
+        }
+      ]
     };
   },
   methods: {
@@ -52,7 +66,7 @@ export default {
       var metadata = {
         contentType: "image/jpeg"
       };
-      var uploadTask = st.ref(this.$data.path + file.name).put(file, metadata);
+      var uploadTask = St.ref(this.$data.path + file.name).put(file, metadata);
       uploadTask.on(
         firebase.storage.TaskEvent.STATE_CHANGED,
         snapshot => {
@@ -81,7 +95,7 @@ export default {
           //success
           this.counter = 0;
           uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            db.collection(this.path).add({
+            Datab.collection(this.path).add({
               name: this.file.name,
               caption: this.caption,
               text: this.text,
@@ -96,4 +110,8 @@ export default {
   }
 };
 </script>
+
+<style>
+</style>
+
 
