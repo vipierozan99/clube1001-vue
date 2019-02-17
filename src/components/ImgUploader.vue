@@ -21,15 +21,13 @@
     <v-flex lg12>
       <v-card dark style="width:80%;margin:auto">
         <v-card-title>
-          <h1>Carregue várias fotos</h1>
+          <h1>Carregue várias fotos WIP</h1>
         </v-card-title>
         <v-form style="width:80%;margin:auto">
           <v-container light>
             <b-form-file v-model="fileGroup" accept="image/*" :state="Boolean(fileGroup)" multiple></b-form-file>
 
-            <v-progress-linear style="height:12px" v-model="fileGroupProgress">
-              <h6 style="text-align:center; position:relative; top:-2.5px">43</h6>
-            </v-progress-linear>
+            <v-progress-linear style="height:12px" v-model="fileGroupProgress"></v-progress-linear>
 
             <v-btn
               color="success"
@@ -62,11 +60,10 @@ export default {
       fileGroup: null,
       fileGroupPath: null,
       fileGroupProgress: 0,
-      fileGroupCounter: null,
       max: 100,
       options: [
         { value: null, text: "Please select an option" },
-        { value: "static-images-home", text: "home collection" },
+        { value: "static_images-home", text: "home collection" },
         { value: "static_images-Fotos-Clube", text: "Fotos Clube collection" },
         {
           value: "static_images-Fotos-Esporte",
@@ -89,7 +86,7 @@ export default {
       }
 
       var metadata = {
-        contentType: "image"
+        contentType: file.type
       };
       var uploadTask = St.ref(this.$data.filePath + file.name).put(
         file,
@@ -136,36 +133,39 @@ export default {
       return true;
     },
     uploadFileGroup(fileGroup) {
-      var fileIndex;
-      for (fileIndex in fileGroup) {
+      var fileIndex = Number;
+
+      for (fileIndex = 0; fileIndex < fileGroup.length; fileIndex++) {
         var file = fileGroup[fileIndex];
+        //console.log(file);
         var fileSize = (file.size / 1024 / 1024).toFixed(4);
 
-        if (fileSize > 4) {
-          alert("Image must be <4MB in size.");
-          return false;
-        }
-
         var metadata = {
-          contentType: "image"
+          contentType: file.type,
+          name: file.name
         };
-        console.log(file);
-        var uploadTask = St.ref(this.$data.fileGroupPath + file.name).put(
-          file,
-          metadata
+        var fileGroupPathParsed = this.$data.fileGroupPath;
+        //console.log(fileGroupPathParsed + "/" + file.name);
+
+        var uploadTasks = [];
+
+        uploadTasks.push(
+          St.ref(fileGroupPathParsed + "/" + file.name).put(file, metadata)
         );
-        uploadTask.on(
+        console.log(uploadTasks);
+
+        uploadTasks[fileIndex].on(
           firebase.storage.TaskEvent.STATE_CHANGED,
           snapshot => {
             var progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            this.fileGroupProgress = progress;
+            this.fileGroupProgress += progress / fileGroup.length;
             switch (snapshot.state) {
               case firebase.storage.TaskState.PAUSED:
                 console.log("Upload is paused");
                 break;
               case firebase.storage.TaskState.RUNNING:
-                console.log("Upload is running");
+                //console.log("Upload is running:" + progress);
                 break;
             }
           },
@@ -180,18 +180,25 @@ export default {
           },
           () => {
             //success
-            this.fileGroupProgress = 0;
-            uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-              Datab.collection(this.fileGroupPath).add({
-                name: file.name,
-                timestamp: new Date(),
-                url: downloadURL
+            this.fileGroupProgress = this.fileGroupProgress - 100;
+            uploadTasks[fileIndex].snapshot.ref
+              .getDownloadURL()
+              .then(downloadURL => {
+                console.log(
+                  "name:" + uploadTasks[fileIndex].snapshot.metadata.name
+                );
+                console.log("url:" + downloadURL);
+                Datab.collection(this.fileGroupPath).add({
+                  name: uploadTasks[fileIndex].snapshot.metadata.name,
+                  timestamp: new Date(),
+                  url: downloadURL
+                });
               });
-            });
           }
         );
-        return true;
       }
+      console.log(uploadTasks);
+      return true;
     }
   },
   computed: {
