@@ -1,31 +1,20 @@
 <template>
   <div class="members">
-    <b-jumbotron>
-      <template slot="header">Sócios</template>
-      <hr class="my-4">
-      <div class="row">
-        <div class="column">
-          <b-list-group>
-            <b-list-group-item
-              class="singleMember"
-              v-for="(member, num) in members1"
-              :key="num"
-              style="overflow:auto;"
-            >{{member}}</b-list-group-item>
-          </b-list-group>
-        </div>
-        <div class="column">
-          <b-list-group>
-            <b-list-group-item
-              class="singleMember"
-              v-for="(member, num) in members2"
-              :key="num"
-              style="overflow:auto;"
-            >{{member}}</b-list-group-item>
-          </b-list-group>
-        </div>
-      </div>
-    </b-jumbotron>
+    <v-card>
+      <v-card-title>
+        <h1>Sócios</h1>
+      </v-card-title>
+      <v-divider></v-divider>
+      <v-card-text>
+        <v-container grid-list-md text-xs-center>
+          <v-layout row wrap>
+            <v-flex v-for="(member, num) in members" :key="num" xs6 sm4>
+              <div class="subheading">{{member}}</div>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
@@ -34,8 +23,7 @@ import members from "@/assets/members";
 export default {
   data() {
     return {
-      members1: members[0],
-      members2: members[1]
+      members: members
     };
   }
 };
@@ -67,3 +55,6 @@ export default {
   margin: auto;
 }
 </style>
+
+
+

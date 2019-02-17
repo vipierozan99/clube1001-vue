@@ -24,10 +24,8 @@ export default {
 .google-maps {
   position: relative;
   padding-bottom: 25%;
-  height: 0;
+  height: 400px;
   overflow: hidden;
-  margin: auto;
-  width: 50%;
   border-radius: 21px 21px 21px 21px;
   -moz-border-radius: 21px 21px 21px 21px;
   -webkit-border-radius: 21px 21px 21px 21px;

@@ -1,37 +1,25 @@
 <template>
   <div class="login">
-    <b-jumbotron class="loginJumbo">
-      <template slot="header">Login to admin page</template>
-
-      <hr class="my-4">
-      <b-form @submit="login">
-        <b-form-group
-          id="emailGroup"
-          label="Email address:"
-          label-for="emailInput"
-          description="We'll never share your email with anyone else."
-        >
-          <b-form-input
-            id="emailInput"
-            type="email"
-            v-model="email"
-            required
-            placeholder="Enter email"
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group id="passGroup" label="Passoword:" label-for="passInput">
-          <b-form-input
-            id="passInput"
-            type="password"
+    <v-card dark class="login-card">
+      <v-card-title>
+        <h1 style="margin:auto">Login to Admin Page</h1>
+      </v-card-title>
+      <v-form ref="form" @submit="login">
+        <v-container>
+          <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
+          <v-text-field
             v-model="password"
+            :rules="passRules"
+            type="password"
+            label="Password"
             required
-            placeholder="Enter password"
-          ></b-form-input>
-        </b-form-group>
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
-      </b-form>
-    </b-jumbotron>
+          ></v-text-field>
+        </v-container>
+        <div style="text-align:right; width:100%; padding:10px;">
+          <v-btn class="login-btn" type="submit" color="success">Login</v-btn>
+        </div>
+      </v-form>
+    </v-card>
   </div>
 </template>
 
@@ -39,16 +27,22 @@
 import { Auth } from "../firebase";
 export default {
   name: "login",
-  data: function() {
+  data() {
     return {
       email: "",
-      password: ""
+      emailRules: [
+        v => !!v || "E-mail is required",
+        v => /.+@.+/.test(v) || "E-mail must be valid"
+      ],
+      password: "",
+      passRules: [v => !!v || "Password is required"]
     };
   },
   methods: {
     login() {
       Auth.signInWithEmailAndPassword(this.email, this.password)
-        .then(user => {
+        .then(() => {
+          //can use user as arg
           this.$router.replace("/admin");
         })
         .catch(err => {
@@ -60,14 +54,17 @@ export default {
 </script>
 
 <style>
-.login {
-  min-height: 1800px;
+.login-btn {
+  height: 60px;
 }
-.loginJumbo {
+
+.login-card {
+  max-width: 600px;
   margin: auto;
-  max-width: 800px;
-}
-.btn {
-  margin: 2px;
+  margin-top: 30px;
+  border-radius: 10px 10px 10px 10px;
+  -moz-border-radius: 10px 10px 10px 10px;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  border: 0px solid #000000;
 }
 </style>

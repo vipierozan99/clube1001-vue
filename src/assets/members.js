@@ -46,17 +46,17 @@ var members = [
   "Trac Adm. de Bens Ltda"
 ];
 
-var members1 = ["Adalberto Pillar Tolentino "];
-var members2 = [];
+// var members1 = ["Adalberto Pillar Tolentino "];
+// var members2 = [];
 
-for (var i = 1; i < members.length; i++) {
-  if (i % 2 == 0) {
-    members1.push(members[i]);
-  } else {
-    members2.push(members[i]);
-  }
-}
+// for (var i = 1; i < members.length; i++) {
+//   if (i % 2 == 0) {
+//     members1.push(members[i]);
+//   } else {
+//     members2.push(members[i]);
+//   }
+// }
 
-members = [members1, members2];
+// members = [members1, members2];
 
 export default members;

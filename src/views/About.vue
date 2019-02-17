@@ -1,12 +1,12 @@
 <template>
   <div class="about">
-    <b-jumbotron class="aboutJumbo">
-      <template slot="header">Nossa História</template>
-      <template slot="lead">
+    <v-container class="aboutJumbo">
+      <h2 display-2>Nossa História</h2>
+      <p>
         O Clube 1001, situado em Camboriú, às margens da BR-101, possui uma infra-estrutura privilegiada da qual desfrutam seus associados.
         É um ótimo lugar para você aproveitar com toda sua família, já que dispomos de quadras de futebol, piscinas, lagoas e muita vegetação.
         Longe do corre-corre do centro da cidade é o que você procurava para descansar e passar ótimos momentos ao lado das pessoas que estima. É ideal para reuniões de empresas e também familiares. Agende uma visita e venha fazer parte do Clube1001.
-      </template>
+      </p>
       <hr class="my-4">
       <h2>Histórico</h2>
       <p>
@@ -24,12 +24,11 @@
         Na assembléia de Fundação foram definidas as regras e decisões sendo as principais:
         Número limitado de sócios patrimoniais em 100 (cem) e sócios contribuintes no máximo 20. A primeira diretoria provisória ficou assim composta: Presidente Leonel Arcângelo Pavan, Vice-presidente Arnaldo Lermen, Secretario- Vitor Antonio Pinto, Tesoureiro- Roque Ângelo Ogliari, Diretores de patrimônio- João Luis Francisco, Edson Olegário,Antonio Rech, Diretores de mobilização- Wirley Verch e Artilio Catafesta.
       </p>
-    </b-jumbotron>
+    </v-container>
   </div>
 </template>
 
 <script>
-import ImgUploader from "../components/ImgUploader";
 export default {
   name: "about",
   components: {}
@@ -39,6 +38,10 @@ export default {
 .aboutJumbo {
   max-width: 1200px;
   margin: auto;
+  padding: 10px;
+}
+.about {
+  font-size: 18px;
 }
 </style>
 

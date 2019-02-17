@@ -1,21 +1,29 @@
 <template>
   <div class="gallery">
-    <b-jumbotron>
-      <b-container fluid class="p-4 bg-dark">
-        <h1>{{galleryTitle()}}</h1>
-
-        <b-row v-for="(row,rowIndex) in image_grid" :key="rowIndex">
-          <b-col v-for="(img, colIndex) in row" :key="colIndex">
-            <b-img v-if="img!=null" @click="inspectImg(rowIndex,colIndex)" fluid :src="img.url"/>
-          </b-col>
-        </b-row>
-      </b-container>
-    </b-jumbotron>
+    <v-container class="singleGallery">
+      <v-container fluid class="p-4 bg-dark">
+        <h1 class="capitalize">{{galleryTitle()}}</h1>
+        <v-container grid-list-md text-xs-center>
+          <v-layout row wrap>
+            <v-flex v-for="(img,index) in static_images" :key="index" xs4>
+              <v-img :src="img.url" height="100%" @click="inspectImg(index)"/>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-container>
+    </v-container>
 
     <!-- Modal Component -->
-    <b-modal centered size="xl" ref="inspectImgModal">
-      <b-img fluid :src="inspectImgSrc"/>
-    </b-modal>
+    <v-dialog v-model="dialog" lazy scrollable="false">
+      <img :src="inspectImgSrc" style=" max-height:1400px;">
+    </v-dialog>
+    <v-dialog v-model="dialogLoading">
+      <v-card dark>
+        <v-card-text>Please stand by
+          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -32,30 +40,22 @@ export default {
   },
   data() {
     return {
-      inspectImgSrc: null
+      inspectImgSrc: null,
+      inspectImgTitle: null,
+      dialog: false,
+      dialogLoading: false
     };
   },
-  computed: {
-    image_grid: function() {
-      var rows = Math.ceil(this.static_images.length / 3);
-      var bigArray = [];
-      for (var i = 0; i < rows; i++) {
-        bigArray[i] = [0, 0, 0];
-      }
-      var img = 0;
-      for (var j = 0; j < rows; j++) {
-        for (var i = 0; i < 3; i++) {
-          bigArray[j][i] = this.static_images[img];
-          img++;
-        }
-      }
-      return bigArray;
-    }
-  },
   methods: {
-    inspectImg(row, col) {
-      this.inspectImgSrc = this.image_grid[row][col].url; //.attr("src", this.image_grid[row][col].url);
-      this.$refs.inspectImgModal.show();
+    inspectImg(index) {
+      this.dialog = false;
+      this.inspectImgSrc = this.static_images[index].url;
+      this.inspectImgTitle = this.static_images[index].caption;
+      this.dialogLoading = true;
+      setTimeout(() => {
+        this.dialogLoading = false;
+        this.dialog = true;
+      }, 500);
     },
     galleryTitle() {
       return this.path.substring(14).replace(/-/g, " ");
@@ -63,7 +63,13 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style >
+.capitalize {
+  text-transform: capitalize;
+}
+.container {
+  padding: 0 0 0 0;
+}
 .bg-dark {
   background-color: #3c3d3e !important;
   border-radius: 11px 11px 11px 11px;
@@ -71,30 +77,18 @@ export default {
   -webkit-border-radius: 11px 11px 11px 11px;
   border: 0px solid #000000;
 }
-.jumbotron {
+.singleGallery {
   padding: 5px 5px;
   margin: auto;
   margin-bottom: 0;
-  background-color: #e9ecef;
   border-radius: 0.3rem;
-  max-width: 1000px;
+  max-width: 1200px;
 }
 .p-4 {
   padding: 0.5rem !important;
 }
-.row {
-  margin-right: 0px;
-  margin-left: 0px;
-}
-.col {
-  padding-left: 0px;
-  padding-right: 0px;
-}
-.img-fluid {
-  max-width: 100%;
-  height: 100%;
-}
-
+</style>
+<style scoped>
 h1,
 .h1 {
   font-size: 22px;
@@ -113,23 +107,6 @@ h1,
   }
 }
 </style>
-<style>
-.modal-lg,
-.modal-xl {
-  max-width: 1400px !important;
-  width: auto;
-}
-.modal-header {
-  /* display: -ms-flexbox; */
-  /* display: -webkit-box; */
-  display: none !important;
-}
-.modal-footer {
-  display: none !important;
-}
 
-.modal-body {
-  max-height: 900px !important;
-}
-</style>
+
 

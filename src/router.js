@@ -3,15 +3,15 @@ import Router from "vue-router";
 
 import Home from "./views/Home.vue";
 import Galleries from "./views/Galleries.vue";
+import Us from "./views/Us.vue";
 import Admin from "./views/Admin.vue";
 import Login from "./views/Login.vue";
-import Us from "./views/Us.vue";
 
 import { Auth } from "@/firebase.js";
 
 Vue.use(Router);
 
-let router = new Router({
+var router = new Router({
   routes: [
     {
       path: "/",
@@ -28,9 +28,14 @@ let router = new Router({
         import(/* webpackChunkName: "about" */ "./views/About.vue")
     },
     {
-      path: "/galleries",
-      name: "galleries",
+      path: "/gallery",
+      name: "gallery",
       component: Galleries
+    },
+    {
+      path: "/us",
+      name: "us",
+      component: Us
     },
     {
       path: "/admin",
@@ -44,11 +49,6 @@ let router = new Router({
       path: "/login",
       name: "login",
       component: Login
-    },
-    {
-      path: "/us",
-      name: "us",
-      component: Us
     }
   ]
 });

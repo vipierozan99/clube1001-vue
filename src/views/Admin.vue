@@ -1,6 +1,14 @@
 <template>
   <div class="admin">
-    <b-button @click="logout" size="lg" variant="danger">Hello {{currentUser}}, Logout!</b-button>
+    <div style="text-align:center; width:100%; padding:0; margin-bottom:10px; margin-top:10px">
+      <v-btn
+        @click="logout"
+        style="margin:auto"
+        large
+        color="success"
+      >Hello {{currentUser}}, Logout!</v-btn>
+    </div>
+
     <img-uploader/>
   </div>
 </template>
