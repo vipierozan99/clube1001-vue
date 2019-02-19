@@ -6,6 +6,7 @@ import Galleries from "./views/Galleries.vue";
 import Us from "./views/Us.vue";
 import Admin from "./views/Admin.vue";
 import Login from "./views/Login.vue";
+import Calendar from "./views/Calendar.vue";
 
 import { Auth } from "@/firebase.js";
 
@@ -49,6 +50,11 @@ var router = new Router({
       path: "/login",
       name: "login",
       component: Login
+    },
+    {
+      path: "/calendar",
+      name: "calendar",
+      component: Calendar
     }
   ]
 });

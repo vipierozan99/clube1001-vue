@@ -5,15 +5,28 @@
         <v-card-title>
           <h1>Carregue uma foto</h1>
         </v-card-title>
-        <v-form style="width:80%;margin:auto">
+        <v-form ref="fileUpForm" @submit="uploadFile(file, caption, text, fileGroupPath, 1)">
           <v-container light>
             <b-form-file v-model="file" accept="image/*" :state="Boolean(file)"></b-form-file>
             <v-progress-linear v-model="fileProgress"></v-progress-linear>
-            <v-btn color="success" style="height:40px" @click="uploadFile(file)">Upload it!</v-btn>
+            <v-btn color="success" style="height:40px" type="submit">Upload it!</v-btn>
             <v-text-field v-model="caption" label="Image title" required></v-text-field>
             <v-text-field v-model="text" label="Sub text" required></v-text-field>
-            <v-select :items="options" v-model="filePath" label="Collection" solo></v-select>
-            <v-text-field v-model="filePath" label="Path to collection" required readonly></v-text-field>
+            <v-select
+              :items="options"
+              v-model="filePath"
+              label="Collection"
+              solo
+              :rules="requiredRule"
+              required
+            ></v-select>
+            <v-text-field
+              v-model="filePath"
+              label="Path to collection"
+              required
+              :rules="requiredRule"
+              readonly
+            ></v-text-field>
           </v-container>
         </v-form>
       </v-card>
@@ -21,23 +34,37 @@
     <v-flex lg12>
       <v-card dark style="width:80%;margin:auto">
         <v-card-title>
-          <h1>Carregue várias fotos WIP</h1>
+          <h1>Carregue várias fotos</h1>
         </v-card-title>
-        <v-form style="width:80%;margin:auto">
-          <v-container light>
+        <v-container light>
+          <v-form
+            ref="fileGroupUpForm"
+            @submit.prevent="uploadFileGroup(fileGroup, fileGroupPath)"
+            style="width:80%;margin:auto"
+          >
             <b-form-file v-model="fileGroup" accept="image/*" :state="Boolean(fileGroup)" multiple></b-form-file>
 
             <v-progress-linear style="height:12px" v-model="fileGroupProgress"></v-progress-linear>
 
-            <v-btn
-              color="success"
-              style="height:40px"
-              @click="uploadFileGroup(fileGroup)"
-            >Upload it!</v-btn>
-            <v-select :items="options" v-model="fileGroupPath" label="Collection" solo></v-select>
-            <v-text-field v-model="fileGroupPath" label="Path to collection" required readonly></v-text-field>
-          </v-container>
-        </v-form>
+            <v-btn color="success" style="height:40px" type="submit">Upload it!</v-btn>
+
+            <v-select
+              :items="options"
+              v-model="fileGroupPath"
+              label="Collection"
+              :rules="requiredRule"
+              solo
+              required
+            ></v-select>
+            <v-text-field
+              v-model="fileGroupPath"
+              label="Path to collection"
+              :rules="requiredRule"
+              required
+              readonly
+            ></v-text-field>
+          </v-form>
+        </v-container>
       </v-card>
     </v-flex>
   </v-layout>
@@ -73,11 +100,21 @@ export default {
           value: "static_images-Fotos-Eventos",
           text: "Fotos Eventos colleciton"
         }
-      ]
+      ],
+      requiredRule: [v => !!v || "This field is required"]
     };
   },
   methods: {
-    uploadFile(file) {
+    uploadFile(file, caption, text, filePath, FileCount) {
+      if (FileCount > 1) {
+        if (!this.$refs.fileGroupUpForm.validate()) {
+          return false;
+        }
+      } else {
+        if (!this.$refs.fileUpForm.validate()) {
+          return false;
+        }
+      }
       var fileSize = (file.size / 1024 / 1024).toFixed(4);
 
       if (fileSize > 4) {
@@ -88,22 +125,24 @@ export default {
       var metadata = {
         contentType: file.type
       };
-      var uploadTask = St.ref(this.$data.filePath + file.name).put(
-        file,
-        metadata
-      );
+      var uploadTask = St.ref(filePath + "/" + file.name).put(file, metadata);
       uploadTask.on(
         firebase.storage.TaskEvent.STATE_CHANGED,
         snapshot => {
           var progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          this.fileProgress = progress;
+          if (FileCount > 1) {
+            this.fileGroupProgress = progress;
+          } else {
+            this.fileProgress = progress;
+          }
+
           switch (snapshot.state) {
             case firebase.storage.TaskState.PAUSED:
               console.log("Upload is paused");
               break;
             case firebase.storage.TaskState.RUNNING:
-              console.log("Upload is running");
+              console.log("Upload is running:" + progress + "%");
               break;
           }
         },
@@ -112,18 +151,25 @@ export default {
           alert("An error occurred:" + error.code);
           switch (error.code) {
             case "storage/unknown":
-              // Unknown error occurred, inspect error.serverResponse
+              console.log(
+                "Unknown error occurred, inspect error.serverResponse"
+              );
+              alert("Unknown error occurred, inspect error.serverResponse");
               break;
           }
         },
         () => {
           //success
-          this.fileProgress = 0;
+          if (FileCount > 1) {
+            this.fileGroupProgress = 0;
+          } else {
+            this.fileProgress = 0;
+          }
           uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            Datab.collection(this.filePath).add({
+            Datab.collection(filePath).add({
               name: file.name,
-              caption: this.caption,
-              text: this.text,
+              caption: caption,
+              text: text,
               timestamp: new Date(),
               url: downloadURL
             });
@@ -132,72 +178,22 @@ export default {
       );
       return true;
     },
-    uploadFileGroup(fileGroup) {
+    uploadFileGroup(fileGroup, fileGroupPath) {
       var fileIndex = Number;
+      this.uploadTasks = [];
+      if (!this.$refs.fileGroupUpForm.validate()) {
+        return false;
+      }
 
-      for (fileIndex = 0; fileIndex < fileGroup.length; fileIndex++) {
-        var file = fileGroup[fileIndex];
-        //console.log(file);
-        var fileSize = (file.size / 1024 / 1024).toFixed(4);
-
-        var metadata = {
-          contentType: file.type,
-          name: file.name
-        };
-        var fileGroupPathParsed = this.$data.fileGroupPath;
-        //console.log(fileGroupPathParsed + "/" + file.name);
-
-        var uploadTasks = [];
-
-        uploadTasks.push(
-          St.ref(fileGroupPathParsed + "/" + file.name).put(file, metadata)
-        );
-        console.log(uploadTasks);
-
-        uploadTasks[fileIndex].on(
-          firebase.storage.TaskEvent.STATE_CHANGED,
-          snapshot => {
-            var progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            this.fileGroupProgress += progress / fileGroup.length;
-            switch (snapshot.state) {
-              case firebase.storage.TaskState.PAUSED:
-                console.log("Upload is paused");
-                break;
-              case firebase.storage.TaskState.RUNNING:
-                //console.log("Upload is running:" + progress);
-                break;
-            }
-          },
-          error => {
-            console.log("An error occurred:" + error.code);
-            alert("An error occurred:" + error.code);
-            switch (error.code) {
-              case "storage/unknown":
-                // Unknown error occurred, inspect error.serverResponse
-                break;
-            }
-          },
-          () => {
-            //success
-            this.fileGroupProgress = this.fileGroupProgress - 100;
-            uploadTasks[fileIndex].snapshot.ref
-              .getDownloadURL()
-              .then(downloadURL => {
-                console.log(
-                  "name:" + uploadTasks[fileIndex].snapshot.metadata.name
-                );
-                console.log("url:" + downloadURL);
-                Datab.collection(this.fileGroupPath).add({
-                  name: uploadTasks[fileIndex].snapshot.metadata.name,
-                  timestamp: new Date(),
-                  url: downloadURL
-                });
-              });
-          }
+      for (fileIndex in fileGroup) {
+        this.uploadFile(
+          fileGroup[fileIndex],
+          null,
+          null,
+          fileGroupPath,
+          fileGroup.length
         );
       }
-      console.log(uploadTasks);
       return true;
     }
   },

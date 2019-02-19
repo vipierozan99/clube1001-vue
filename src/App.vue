@@ -10,7 +10,7 @@
           <v-container grid-list-md text-xs-center>
             <v-layout align-center justify-center row wrap>
               <v-flex xs12 sm4 style>
-                <v-img contain :src="logo_footer_src" alt/>
+                <v-img contain :src="logo_foot" alt/>
               </v-flex>
               <v-flex xs12 sm4 style="font-color:gray">ENDEREÇO
                 <br>R. Santa Cecília, 1900
@@ -41,6 +41,7 @@
 
 <script>
 import MainNavBar from "@/components/MainNavBar";
+import logo_foot from "@/assets/logo-foot.svg";
 export default {
   name: "App",
   components: {
@@ -48,7 +49,7 @@ export default {
   },
   data() {
     return {
-      logo_footer_src: "http://clube1001.com.br/assets/images/logo-foot-.svg"
+      logo_foot: logo_foot
     };
   }
 };

@@ -3,12 +3,15 @@
     <v-toolbar dark class="hidden-sm-and-down" height="90">
       <v-toolbar-title>
         <v-btn flat to="/">
-          <v-img :src="logo_src" width="200" alt/>
+          <v-img :src="logo_head" width="200" alt/>
         </v-btn>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn to="/" flat="flat">Home</v-btn>
+      </v-toolbar-items>
+      <v-toolbar-items>
+        <v-btn to="/calendar" flat="flat">Calendário</v-btn>
       </v-toolbar-items>
       <v-toolbar-items>
         <v-btn to="/about" flat="flat">Sobre</v-btn>
@@ -25,11 +28,12 @@
         <v-expansion-panel-content>
           <div slot="header">
             <v-btn flat to="/">
-              <v-img :src="logo_src" width="150" alt/>
+              <v-img :src="logo_head" width="150" alt/>
             </v-btn>
           </div>
           <v-card>
             <v-btn to="/" flat="flat">Home</v-btn>
+            <v-btn to="/calendar" flat="flat">Calendário</v-btn>
             <v-btn to="/about" flat="flat">Sobre</v-btn>
             <v-btn to="/gallery" flat="flat">Galeria</v-btn>
             <v-btn to="/us" flat="flat">Nós</v-btn>
@@ -41,11 +45,12 @@
 </template>
 
 <script>
+import logo_head from "@/assets/logo-head.svg";
 export default {
   name: "MainNavBar",
   data() {
     return {
-      logo_src: "http://clube1001.com.br/assets/images/logo-head-.svg"
+      logo_head: logo_head
     };
   }
 };
