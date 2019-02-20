@@ -9,7 +9,7 @@
         <v-container grid-list-md text-xs-center>
           <v-layout row wrap>
             <v-flex v-for="(member, num) in members" :key="num" xs6 sm4>
-              <div class="subheading">{{member}}</div>
+              <div class="subheading">{{member.name}}</div>
             </v-flex>
           </v-layout>
         </v-container>
@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import members from "@/assets/members";
+import { Datab } from "../firebase";
 export default {
-  data() {
+  firestore() {
     return {
-      members: members
+      members: Datab.collection("members")
     };
   }
 };

@@ -3,14 +3,14 @@
     <div class="hero"></div>
     <vt-carousel path="static_images-home"/>
     <v-card class="map-presenter" dark color="secondary" style="padding: 30 30 30 30 !important;">
-      <v-layout justify-center v-bind="binding" fill-height>
-        <v-flex xs6 sm12>
+      <v-layout row wrap>
+        <v-flex xs12 sm6>
           <v-container style="padding:2%">
             <embed-map/>
           </v-container>
         </v-flex>
-        <v-flex xs6 sm12 style="margin-bottom:3%">
-          <v-flex class="map-card-text" v-bind="sizing" light>
+        <v-flex xs12 sm6 style="margin-bottom:3%">
+          <v-flex class="map-card-text" v-bind="sizing" style="margin-top:10px;" light>
             <v-container>
               <b style="font-size:40px" font-weight-regular>
                 <i class="material-icons md-36">location_on</i>

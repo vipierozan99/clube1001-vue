@@ -8,18 +8,25 @@
         color="success"
       >Hello {{currentUser}}, Logout!</v-btn>
     </div>
+    <eventCreator/>
 
     <img-uploader/>
+
+    <member-manager/>
   </div>
 </template>
 <script>
 import ImgUploader from "../components/ImgUploader";
+import eventCreator from "../components/eventCreator";
+import memberManager from "../components/memberManager";
 import { Auth } from "../firebase.js";
 
 export default {
   name: "admin",
   components: {
-    ImgUploader
+    ImgUploader,
+    eventCreator,
+    memberManager
   },
   data() {
     return {
